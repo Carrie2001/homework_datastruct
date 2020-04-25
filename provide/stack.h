@@ -1,33 +1,32 @@
 #pragma once
 #include <stdlib.h>
-#define STACK_INIT_SIZE 100
-#define n 10
+#define STACK_INIT_SIZE 200
 typedef struct
 {
 	int x;
 	int y;
-}Coordinate;
+}Costepsinate;
 
 
 
 typedef struct
 {
-	int ord;
-	Coordinate seat; //зјБъ
+	int steps;
+	Costepsinate seat; //зјБъ
 	int di;
-}SElemType ,node;
+}node;
 
 typedef struct
 {
-	SElemType* base;
-	SElemType* top;
+	node* base;
+	node* top;
 	int stacksize;
-}SqStack;
+}Stack;
 
-int  InitStack(SqStack* s1);
+int  InitStack(Stack* s1);
 
-SElemType Pop(SqStack* s, SElemType m);
+node Pop(Stack* s, node m);
 
-int Push(SqStack* s1, SElemType m);
+int Push(Stack* s1, node m);
 
-int StackEmpty(SqStack* s);
+int StackEmpty(Stack* s);

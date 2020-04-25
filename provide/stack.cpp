@@ -1,8 +1,8 @@
 #include "stack.h"
 
-int InitStack(SqStack* s1)
+int InitStack(Stack* s1)
 {
-	s1->base = (SElemType*)malloc(STACK_INIT_SIZE * sizeof(SElemType));
+	s1->base = (node*)malloc(STACK_INIT_SIZE * sizeof(node));
 	if (!s1->base)
 		exit(1);
 	s1->top = s1->base;
@@ -10,26 +10,18 @@ int InitStack(SqStack* s1)
 	return (1);
 }
 
-SElemType Pop(SqStack* s, SElemType m){
+node Pop(Stack* s, node m){
 	m = *(--s->top);
 	return m;
 }
 
-int Push(SqStack* s1, SElemType m)
+int Push(Stack* s1, node m)
 {
-	if (s1->top - s1->base >= s1->stacksize)
-	{
-		s1->base = (SElemType*)realloc(s1->base, (s1->stacksize + n) * sizeof(SElemType));
-		if (!s1->base)
-			exit(1);
-		s1->top = s1->base + s1->stacksize;
-		s1->stacksize += n;
-	}
 	*(s1->top++) = m;
 	return 1;
 }
 
-int StackEmpty(SqStack* s){
+int StackEmpty(Stack* s){
 	if (s->base == s->top)
 		return (1);
 	else

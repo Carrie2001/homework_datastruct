@@ -1,38 +1,38 @@
 #include "horse_run.h"
 
-Coordinate move[8] = { {-2,1},{-1,2},{1,2},{2,1},{2,-1},{1,-2},{-1,-2},{-1,-1} };
+Costepsinate move[8] = { {-2,1},{-1,2},{1,2},{2,1},{2,-1},{1,-2},{-1,-2},{-1,-1} };
 
-int Pass(Coordinate s,int chessboard[][8])
+inline bool Pass(Costepsinate pos,int board[][8])
 {
-	if (!chessboard[s.x][s.y]&& (s.x <= 7) && (s.x >= 0)&& (s.y <= 7) && (s.y >= 0))
+	if (!board[pos.x][pos.y]&& (pos.x <= 7) && (pos.x >= 0)&& (pos.y <= 7) && (pos.y >= 0))
 		return 1;
 	else
 		return 0;
 }
 
-Coordinate NextPos(Coordinate s, int i)
+Costepsinate NextPos(Costepsinate s, int i)
 {
 	s.x = s.x + move[i].x;
 	s.y = s.y + move[i].y;
 	return(s);
 }
 
-void let_Horse_Fly(Coordinate start, int chessboard[][8])
+void let_Horse_Fly(Costepsinate start, int board[][8])
 {
 	int step = 0;
-	SqStack way;
-	SElemType top_tem;
-	Coordinate curpos = start;
+	Stack way;
+	node top_tem;
+	Costepsinate curpos = start;
 	InitStack(&way);
 
 	do
 	{
-		if (Pass(curpos,chessboard))
+		if (Pass(curpos,board))
 		{
 			step++;
-			chessboard[curpos.x][curpos.y] = step;
+			board[curpos.x][curpos.y] = step;
 			top_tem.seat = curpos;
-			top_tem.ord = step;
+			top_tem.steps = step;
 			top_tem.di = 0;
 			Push(&way, top_tem);
 			if (step == 64)
@@ -44,12 +44,12 @@ void let_Horse_Fly(Coordinate start, int chessboard[][8])
 		{
 			if (!StackEmpty(&way))
 			{
-				Pop(&way, top_tem);
+				Pop(&way, top_tem); //往前回溯
 				while (top_tem.di == 7 && !StackEmpty(&way))
 				{
-					chessboard[top_tem.seat.x][top_tem.seat.y] = 0;//恢复原态
+					board[top_tem.seat.x][top_tem.seat.y] = 0;//恢复原态
 					top_tem = Pop(&way, top_tem);	 //往前回溯
-					step = top_tem.ord;			//恢复原态
+					step = top_tem.steps;			//恢复原态
 				}
 				if (top_tem.di < 7) //穷举所有可能
 				{
