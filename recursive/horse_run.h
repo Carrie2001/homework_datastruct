@@ -1,9 +1,12 @@
 #pragma once
 #include "stack.h"
 
-inline bool Pass(Costepsinate s, int board[][8]);
+#define  len  8  //行列数
 
-Costepsinate NextPos(Costepsinate s, int i);
 
-void let_Horse_Fly(Costepsinate start ,int board[][8]);
+
+
+void find_The_Way(bool board[][len], int& steps, Stack& way,int &count);//找路函数
+
+void  let_Horse_Fly(int pos[]);//启动函数
 

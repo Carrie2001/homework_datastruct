@@ -1,66 +1,72 @@
 #include "horse_run.h"
+#include <iostream>
 
-Costepsinate move[8] = { {-2,1},{-1,2},{1,2},{2,1},{2,-1},{1,-2},{-1,-2},{-1,-1} };
-
-inline bool Pass(Costepsinate pos,int board[][8])
+bool pass(int pos[], bool board[][len])
 {
-	if (!board[pos.x][pos.y]&& (pos.x <= 7) && (pos.x >= 0)&& (pos.y <= 7) && (pos.y >= 0))
+	if (pos[0] >= 0 && pos[0] < len && pos[1] >= 0 && pos[1] < len && !board[pos[0]][pos[1]])
 		return 1;
-	else
-		return 0;
+	return 0;
 }
 
-Costepsinate NextPos(Costepsinate s, int i)
-{
-	s.x = s.x + move[i].x;
-	s.y = s.y + move[i].y;
-	return(s);
-}
+int add[len*2]{ -2,1,-1,2,1,2,2,1,2,-1,1,-2,-1,-2,-2 ,-1 };
+int found = 0;
 
-void let_Horse_Fly(Costepsinate start, int board[][8])
+void find_The_Way(bool board[][len], int& steps, Stack& way , int &count)
 {
-	int step = 0;
-	Stack way;
-	node top_tem;
-	Costepsinate curpos = start;
-	InitStack(&way);
-
-	do
+	if (count)
+		return;
+	if (steps >= len * len +1) {
+		count++;
+		return;
+	}
+	int cur[2];
+	GetTop(way, cur);
+	if (!pass(cur,board) )
 	{
-		if (Pass(curpos,board))
-		{
-			step++;
-			board[curpos.x][curpos.y] = step;
-			top_tem.seat = curpos;
-			top_tem.steps = step;
-			top_tem.di = 0;
-			Push(&way, top_tem);
-			if (step == 64)
-				break;
-			else
-				curpos = NextPos(curpos, top_tem.di);
-		}
-		else
-		{
-			if (!StackEmpty(&way))
-			{
-				Pop(&way, top_tem); //往前回溯
-				while (top_tem.di == 7 && !StackEmpty(&way))
-				{
-					board[top_tem.seat.x][top_tem.seat.y] = 0;//恢复原态
-					top_tem = Pop(&way, top_tem);	 //往前回溯
-					step = top_tem.steps;			//恢复原态
-				}
-				if (top_tem.di < 7) //穷举所有可能
-				{
-					top_tem.di++;
-					Push(&way, top_tem);
-					curpos = NextPos(top_tem.seat, top_tem.di);
-				}
-			}
-		}
-	} while (!StackEmpty(&way));
+		return; // 不符题意
+	}
+	board[cur[0]][cur[1]] = 1; 
+	/* 以下是穷举的8种可能的情况： */
+	for (size_t i = 0; i < 8; i++)
+	{
+		int nex[2];
+		nex[0] = cur[0] + add[ 2*i];
+		nex[1] = cur[1] + add[ 2*i+1];
+		Push(way, nex);
+		steps++;
+		find_The_Way(board, steps , way,count);
+		if (count)
+			return;
+		Pop(way);
+		steps--;
+	}
+	board[cur[0]][cur[1]] = 0; // 此位置清空，没有走马
 }
 
-
-
+void let_Horse_Fly(int pos[])
+{
+	bool board[len][len]{0};
+	Stack way; InitStack_Sq(way);
+	Push(way, pos);
+	int steps = 1; int count = 0;
+	find_The_Way(board, steps, way,count);
+	Pop(way);
+	Stack re; InitStack_Sq(re);
+	
+	for (size_t i = 0; i < 64; i++)
+	{
+		int tem[2];
+		pop_And_Return(way, tem);
+		Push(re, tem);
+	}
+	for (size_t i = 0; i < 8; i++)
+	{
+		for (size_t j = 0; j < 8; j++)
+		{
+			int tem[2];
+			pop_And_Return(re, tem);
+			std::cout <<" "<< tem[0]+1 << ' ' << tem[1]+1<<" ->";
+		}
+		std::cout<< std::endl;
+	}
+}

@@ -1,56 +1,29 @@
 #include "stack.h"
 
-void InitStack_Sq(Stack& S, int maxsize, int incresize)
-
+int InitStack(Stack* s1)
 {
-	S.stack = (int*)malloc(maxsize * 2 * sizeof(int)); // ÎªË³ÐòÕ»·ÖÅä³õÊ¼´æ´¢¿Õ¼ä
-	if (!S.stack)  exit(1);                                // ´æ´¢¿Õ¼ä·ÖÅäÊ§°Ü
-	S.top = -1;                                            // ÖÃÕ»¿Õ
-	S.stacksize = maxsize;                                 // Ë³ÐòÕ»µÄµ±Ç°ÈÝÁ¿
-	S.incrementsize = incresize;                           // Ôö²¹¿Õ¼ä
+	s1->base = (node*)malloc(STACK_INIT_SIZE * sizeof(node));
+	if (!s1->base)
+		exit(1);
+	s1->top = s1->base;
+	s1->stacksize = STACK_INIT_SIZE;
+	return (1);
 }
 
-int StackLength_Sq(Stack S)
+node Pop(Stack* s, node m){
+	m = *(--s->top);
+	return m;
+}
+
+int Push(Stack* s1, node m)
 {
-	return S.top + 1;
+	*(s1->top++) = m;
+	return 1;
 }
 
-bool Push(Stack& S, int* e)
-
-{  //ÔÚË³ÐòÕ»µÄÕ»¶¥²åÈëÔªËØe
-	if (S.top == S.stacksize - 1) {
-		S.stack = (int*)realloc(S.stack, (S.stacksize + S.incrementsize) * sizeof(int)); // Õ»Âú£¬¸øË³ÐòÕ»Ôö²¹¿Õ¼ä
-		if (!S.stack)     return false;                // ·ÖÅä´æ´¢¿Õ¼äÊ§°Ü
-		S.stacksize += S.incrementsize;
-	}
-	S.stack[++S.top] = *e;                             // Õ»¶¥Ö¸ÕëÉÏÒÆ£¬ÔªËØe½øÕ»
-	S.stack[++S.top] = *(e + 1);
-	return true;
+int StackEmpty(Stack* s){
+	if (s->base == s->top)
+		return (1);
+	else
+		return (0);
 }
-
-bool Pop(Stack& S)// Pop_Sq
-{   // É¾³ýË³ÐòÕ»Õ»¶¥ÔªËØ
-	if (S.top == -1)  return false;
-	S.top -= 2;
-	return true;
-}
-
-bool GetTop(Stack S, int* e)
-{   
-	if (S.top == -1)  return false;
-	*(e + 1) = S.stack[S.top];
-	*e = S.stack[S.top - 1];
-	return true;
-}
-bool StackEmpty_Sq(Stack S)
-{
-	if (S.top == -1)  return true;
-	else return false;
-}
-
-void pop_And_return(Stack& S, int* e)
-{
-	*(e + 1) = S.stack[S.top--];
-	*e = S.stack[S.top--];
-}
-// StackEmpty_Sq
